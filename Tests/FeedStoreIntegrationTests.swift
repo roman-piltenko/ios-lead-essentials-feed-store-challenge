@@ -27,9 +27,9 @@ class FeedStoreIntegrationTests: XCTestCase {
 	}
 	
 	func test_retrieve_deliversEmptyOnEmptyCache() {
-		//        let sut = makeSUT()
-		//
-		//        expect(sut, toRetrieve: .empty)
+		let sut = makeSUT()
+		
+		expect(sut, toRetrieve: .empty)
 	}
 	
 	func test_retrieve_deliversFeedInsertedOnAnotherInstance() {
@@ -72,15 +72,44 @@ class FeedStoreIntegrationTests: XCTestCase {
 	// - MARK: Helpers
 	
 	private func makeSUT() -> FeedStore {
-		fatalError("Must be implemented")
+		RealmStore(fileURL: testSpecificStoreURL())
+	}
+	
+	private func testSpecificStoreURL() -> URL {
+		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
 	}
 	
 	private func setupEmptyStoreState() {
-		
+		deleteStoreArtifacts()
 	}
 	
 	private func undoStoreSideEffects() {
-		
+		deleteStoreArtifacts()
 	}
 	
+	private func deleteStoreArtifacts() {
+		let sut = makeSUT()
+		
+		sut.deleteCachedFeed { _ in }
+		clearTestStoreCache()
+	}
+	
+	private func clearTestStoreCache() {
+		let cacheURL =  FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		let fileManager = FileManager.default
+		do {
+			let directoryContents = try FileManager.default.contentsOfDirectory( at: cacheURL, includingPropertiesForKeys: nil, options: [])
+			for file in directoryContents {
+				do {
+					try fileManager.removeItem(at: file)
+				}
+				catch let error as NSError {
+					debugPrint("Ooops! Something went wrong: \(error)")
+				}
+				
+			}
+		} catch let error as NSError {
+			print(error.localizedDescription)
+		}
+	}
 }
