@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 public enum RetrieveCachedFeedResult {
 	case empty
@@ -26,4 +27,22 @@ public protocol FeedStore {
 	/// The completion handler can be invoked in any thread.
 	/// Clients are responsible to dispatch to appropriate threads, if needed.
 	func retrieve(completion: @escaping RetrievalCompletion)
+}
+
+public final class RealmStore: FeedStore {
+	public init() {
+		
+	}
+	
+	public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
+		
+	}
+	
+	public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
+		
+	}
+	
+	public func retrieve(completion: @escaping RetrievalCompletion) {
+		completion(.empty)
+	}
 }
