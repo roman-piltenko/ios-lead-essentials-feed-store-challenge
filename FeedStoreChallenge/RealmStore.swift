@@ -58,20 +58,24 @@ public final class RealmStore: FeedStore {
 		do {
 			let database = try Realm(configuration: configuration)
 			let result = database.objects(FeedRealmObject.self)
-			if let firstResult = result.first {
-				let timestamp = firstResult.timestamp
-				let localImages: [LocalFeedImage] = firstResult.images.map { LocalFeedImage(id: UUID(uuidString: $0.imageIdString)!,
-																							description: $0.imageDescription,
-																							location: $0.imageLocation,
-																							url: URL(string: $0.imageUrlString)!) }
-				if localImages.isEmpty {
-					completion(.empty)
-				} else {
-					completion(.found(feed: localImages, timestamp: timestamp))
-				}
-			} else {
+			guard let storedObject = result.first else {
 				completion(.empty)
+				return
 			}
+			
+			let timestamp = storedObject.timestamp
+			let localImages: [LocalFeedImage] = try storedObject.images.map { item in
+				guard let id = UUID(uuidString: item.imageIdString),
+					  let url = URL(string: item.imageUrlString) else {
+					throw NSError(domain: "retrieval error", code: 0)
+				}
+				return LocalFeedImage(id: id,
+									  description: item.imageDescription,
+									  location: item.imageLocation,
+									  url: url)
+			}
+			
+			completion(localImages.isEmpty ? .empty : .found(feed: localImages, timestamp: timestamp))
 		} catch let error as NSError {
 			completion(.failure(error))
 		}
