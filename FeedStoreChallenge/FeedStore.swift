@@ -29,24 +29,6 @@ public protocol FeedStore {
 	func retrieve(completion: @escaping RetrievalCompletion)
 }
 
-final class ImageRealmObject: Object {
-	@objc dynamic var imageIdString: String = ""
-	@objc dynamic var imageDescription: String?
-	@objc dynamic var imageLocation: String?
-	@objc dynamic var imageUrlString: String = ""
-	let feed = LinkingObjects(fromType: FeedRealmObject.self, property: "images")
-}
-
-final class FeedRealmObject: Object {
-	@objc dynamic var objID: ObjectId = ObjectId()
-	@objc dynamic var timestamp: Date = Date.init()
-	let images = List<ImageRealmObject>()
-	
-	override class func primaryKey() -> String? {
-		"objID"
-	}
-}
-
 public final class RealmStore: FeedStore {
 	
 	private let configuration: Realm.Configuration
