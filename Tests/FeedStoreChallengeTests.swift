@@ -110,10 +110,7 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	}
 
 	private func deleteStoreArtifacts() {
-		let sut = makeSUT()
-		
-		sut.deleteCachedFeed { _ in }
-		clearTestStoreCache()
+		FeedStoreTestHelper.clearTestStoreCache(at: storeCacheURL)
 	}
 	
 	private func makeSUT() -> FeedStore {
@@ -121,26 +118,11 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	}
 	
 	private func testSpecificStoreURL() -> URL {
-		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
+		storeCacheURL.appendingPathComponent("\(type(of: self)).store")
 	}
 	
-	private func clearTestStoreCache() {
-		let cacheURL =  FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-		let fileManager = FileManager.default
-		do {
-			let directoryContents = try FileManager.default.contentsOfDirectory( at: cacheURL, includingPropertiesForKeys: nil, options: [])
-			for file in directoryContents {
-				do {
-					try fileManager.removeItem(at: file)
-				}
-				catch let error as NSError {
-					debugPrint("Ooops! Something went wrong: \(error)")
-				}
-				
-			}
-		} catch let error as NSError {
-			print(error.localizedDescription)
-		}
+	private var storeCacheURL: URL {
+		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
 	}
 }
 
