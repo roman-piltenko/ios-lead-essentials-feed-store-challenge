@@ -37,6 +37,7 @@ public final class RealmStore: FeedStore {
 																					  "imageLocation": $0.location,
 																					  "imageUrlString": $0.url.absoluteString]) }
 			try database.write {
+				database.deleteAll()
 				let realmFeed = FeedRealmObject(value: ["timestamp": timestamp,
 														"images": realmImages])
 				database.add(realmFeed, update: .all)
@@ -67,8 +68,7 @@ public final class RealmStore: FeedStore {
 									  location: item.imageLocation,
 									  url: url)
 			}
-			
-			completion(localImages.isEmpty ? .empty : .found(feed: localImages, timestamp: timestamp))
+			completion(.found(feed: localImages, timestamp: timestamp))
 		} catch {
 			completion(.failure(error))
 		}
