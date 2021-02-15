@@ -28,8 +28,8 @@ public final class RealmStore: FeedStore {
 			let database = try Realm(configuration: configuration)
 			try database.write {
 				database.deleteAll()
-				completion(nil)
 			}
+			completion(nil)
 		} catch let error as NSError {
 			completion(error)
 		}
@@ -46,9 +46,8 @@ public final class RealmStore: FeedStore {
 				let realmFeed = FeedRealmObject(value: ["timestamp": timestamp,
 														"images": realmImages])
 				database.add(realmFeed, update: .all)
-				completion(nil)
 			}
-			
+			completion(nil)
 		} catch let error as NSError {
 			completion(error)
 		}
