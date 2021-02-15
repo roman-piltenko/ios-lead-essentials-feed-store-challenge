@@ -38,9 +38,8 @@ public final class RealmStore: FeedStore {
 																					  "imageUrlString": $0.url.absoluteString]) }
 			try database.write {
 				database.deleteAll()
-				let realmFeed = FeedRealmObject(value: ["timestamp": timestamp,
-														"images": realmImages])
-				database.add(realmFeed, update: .all)
+				let realmFeed = FeedRealmObject(feed: realmImages, timestamp: timestamp)
+				database.add(realmFeed)
 			}
 			completion(nil)
 		} catch {
@@ -58,16 +57,7 @@ public final class RealmStore: FeedStore {
 			}
 			
 			let timestamp = storedObject.timestamp
-			let localImages: [LocalFeedImage] = try storedObject.images.map { item in
-				guard let id = UUID(uuidString: item.imageIdString),
-					  let url = URL(string: item.imageUrlString) else {
-					throw NSError(domain: "retrieval error", code: 0)
-				}
-				return LocalFeedImage(id: id,
-									  description: item.imageDescription,
-									  location: item.imageLocation,
-									  url: url)
-			}
+			let localImages: [LocalFeedImage] = try storedObject.toLocalImages()
 			completion(.found(feed: localImages, timestamp: timestamp))
 		} catch {
 			completion(.failure(error))

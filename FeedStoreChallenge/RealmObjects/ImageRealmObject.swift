@@ -14,5 +14,15 @@ final class ImageRealmObject: Object {
 	@objc dynamic var imageDescription: String?
 	@objc dynamic var imageLocation: String?
 	@objc dynamic var imageUrlString: String = ""
-	let feed = LinkingObjects(fromType: FeedRealmObject.self, property: "images")
+	
+	func toLocalImages() throws -> LocalFeedImage {
+		guard let id = UUID(uuidString: imageIdString),
+			  let url = URL(string: imageUrlString) else {
+			throw Realm.Error(.fail)
+		}
+		return LocalFeedImage(id: id,
+							  description: imageDescription,
+							  location: imageLocation,
+							  url: url)
+	}
 }
