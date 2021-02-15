@@ -92,6 +92,6 @@ class FeedStoreIntegrationTests: XCTestCase {
 	}
 	
 	private func deleteStoreArtifacts() {
-		FeedStoreTestHelper.clearTestStoreCache(at: storeCacheURL)
+		RealmStore(fileURL: testSpecificStoreURL()).deleteArtifacts(at: testSpecificStoreURL())
 	}
 }

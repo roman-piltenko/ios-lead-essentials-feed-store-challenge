@@ -74,3 +74,10 @@ public final class RealmStore: FeedStore {
 		}
 	}
 }
+
+extension RealmStore {
+	public func deleteArtifacts(at fileURL: URL) {
+		let configuration = Realm.Configuration(fileURL: fileURL)
+		_ = try! Realm.deleteFiles(for: configuration)
+	}
+}
