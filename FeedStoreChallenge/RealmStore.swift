@@ -13,14 +13,8 @@ public final class RealmStore: FeedStore {
 	
 	private let configuration: Realm.Configuration
 	
-	public init(fileURL: URL) {
-		self.configuration = Realm.Configuration(fileURL: fileURL, schemaVersion: 1, migrationBlock: { _, oldSchemaVersion in
-			if (oldSchemaVersion < 1) {
-			  // Nothing to do!
-			  // Realm will automatically detect new properties and removed properties
-			  // And will update the schema on disk automatically
-			}
-		})
+	public init(fileURL: URL? = nil, inMemoryIdentifier: String? = nil) {
+		self.configuration = Realm.Configuration(fileURL: fileURL, inMemoryIdentifier: inMemoryIdentifier)
 	}
 	
 	public func deleteCachedFeed(completion: @escaping DeletionCompletion) {

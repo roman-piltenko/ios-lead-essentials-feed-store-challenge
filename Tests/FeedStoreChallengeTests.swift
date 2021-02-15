@@ -93,35 +93,11 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	
 	// - MARK: Helpers
 	
-	override func setUp() {
-		setupEmptyStoreState()
-	}
-
-	override func tearDown() {
-		undoStoreSideEffects()
-	}
-
-	private func setupEmptyStoreState() {
-		deleteStoreArtifacts()
-	}
-
-	private func undoStoreSideEffects() {
-		deleteStoreArtifacts()
-	}
-
-	private func deleteStoreArtifacts() {
-		FeedStoreTestHelper.clearTestStoreCache(at: storeCacheURL)
-	}
-	
 	private func makeSUT() -> FeedStore {
-		RealmStore(fileURL: testSpecificStoreURL())
+		RealmStore(fileURL: nil, inMemoryIdentifier: testSpecificInMemoryIdentifier())
 	}
 	
-	private func testSpecificStoreURL() -> URL {
-		storeCacheURL.appendingPathComponent("\(type(of: self)).store")
-	}
-	
-	private var storeCacheURL: URL {
-		FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+	private func testSpecificInMemoryIdentifier() -> String {
+		"\(type(of: self)).realm"
 	}
 }
