@@ -30,7 +30,7 @@ public final class RealmStore: FeedStore {
 				database.deleteAll()
 			}
 			completion(nil)
-		} catch let error as NSError {
+		} catch {
 			completion(error)
 		}
 	}
@@ -48,7 +48,7 @@ public final class RealmStore: FeedStore {
 				database.add(realmFeed, update: .all)
 			}
 			completion(nil)
-		} catch let error as NSError {
+		} catch {
 			completion(error)
 		}
 	}
@@ -75,7 +75,7 @@ public final class RealmStore: FeedStore {
 			}
 			
 			completion(localImages.isEmpty ? .empty : .found(feed: localImages, timestamp: timestamp))
-		} catch let error as NSError {
+		} catch {
 			completion(.failure(error))
 		}
 	}
